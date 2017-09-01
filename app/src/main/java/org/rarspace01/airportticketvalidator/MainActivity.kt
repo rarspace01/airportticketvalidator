@@ -41,6 +41,10 @@ class MainActivity : AppCompatActivity() {
 
     fun getDepartingFlights(airportCode: String) {
         //
+        /*
+
+        5q8w245p9an8dzr9c7daz3dz
+         */
         var departedPage = "https://api.lufthansa.com/v1/operations/flightstatus/departures/" + airportCode + "/2017-09-01T16:00?limit=100"
         val queue = Volley.newRequestQueue(this)
         // Request a string response from the provided URL.
