@@ -11,6 +11,7 @@ import com.android.volley.Response
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.zxing.integration.android.IntentIntegrator
+import org.rarspace01.airportticketvalidator.bcbp.Parser
 
 
 class MainActivity : AppCompatActivity() {
@@ -32,6 +33,9 @@ class MainActivity : AppCompatActivity() {
             } else {
                 Log.d("MainActivity", "Scanned")
                 Toast.makeText(this, "Scanned: " + result.contents, Toast.LENGTH_LONG).show()
+                val bcbpParser = Parser()
+                val readTicket = bcbpParser.parse(result.contents)
+                Log.d("City from: ", readTicket.firstFlightSegment.fromCity);
             }
         } else {
             // This is important, otherwise the result will not be passed to the fragment
