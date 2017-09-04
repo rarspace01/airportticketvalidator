@@ -13,9 +13,12 @@ import com.android.volley.VolleyLog
 import com.android.volley.toolbox.JsonObjectRequest
 import com.android.volley.toolbox.Volley
 import com.google.zxing.integration.android.IntentIntegrator
+import kotlinx.android.synthetic.main.activity_main.*
 import org.json.JSONArray
 import org.json.JSONObject
 import org.rarspace01.airportticketvalidator.bcbp.Parser
+import java.text.SimpleDateFormat
+import java.util.*
 
 
 class MainActivity : AppCompatActivity() {
@@ -25,7 +28,12 @@ class MainActivity : AppCompatActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
-        IntentIntegrator(this).setBeepEnabled(false).setOrientationLocked(false).initiateScan()
+
+        //val btnSearch = findViewById<Button>(R.id.btn_Scan)
+        btn_Scan.setOnClickListener({ view ->
+            IntentIntegrator(this).setBeepEnabled(false).setOrientationLocked(false).initiateScan()
+        })
+        getDepartingFlights("HAM")
     }
 
 
@@ -41,10 +49,10 @@ class MainActivity : AppCompatActivity() {
                 val bcbpParser = Parser()
                 val readTicket = bcbpParser.parse(result.contents)
                 Log.d("City from: ", readTicket.firstFlightSegment.fromCity)
-                var airportText = findViewById <EditText>(R.id.txtAirport)
+                var airportText = findViewById<EditText>(R.id.txtAirport)
                 getDepartingFlights(airportText.text.toString())
                 // wait till Flights are requested
-                
+
             }
         } else {
             // This is important, otherwise the result will not be passed to the fragment
@@ -54,7 +62,9 @@ class MainActivity : AppCompatActivity() {
 
     fun getDepartingFlights(airportCode: String): JSONArray {
 
-        var departedPage = "https://api.lufthansa.com/v1/operations/flightstatus/departures/" + airportCode + "/2017-09-04T16:00?limit=100"
+        val currentDate = Date()
+        val dateFormatter = SimpleDateFormat("YYYY-MM-dd'T'HH:mm")
+        var departedPage = "https://api.lufthansa.com/v1/operations/flightstatus/departures/" + airportCode + "/" + dateFormatter.format(currentDate) + "?limit=100"
         val queue = Volley.newRequestQueue(this)
         val req = object : JsonObjectRequest(Request.Method.GET, departedPage,
                 null, Response.Listener<JSONObject> { response ->
@@ -74,7 +84,7 @@ class MainActivity : AppCompatActivity() {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String> {
                 val headers = HashMap<String, String>()
-                headers.put("Authorization", "Bearer rbm7xajvysh6599vmetpznsf")
+                headers.put("Authorization", "Bearer 8fsghn2r6mqeqs4ce8rq3n29")
                 return headers
             }
         }
