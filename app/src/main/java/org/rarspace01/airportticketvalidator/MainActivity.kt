@@ -71,6 +71,8 @@ class MainActivity : AppCompatActivity() {
             Log.d("Response", response.toString())
             jsonArrayDepartingFlights = response.getJSONObject("FlightStatusResource").getJSONObject("Flights").getJSONArray("Flight")
 
+            // parse Flights to Array of Flights
+
             Toast.makeText(this@MainActivity, "" + response.toString(), Toast.LENGTH_SHORT).show()
         }, Response.ErrorListener { error ->
             VolleyLog.d("Error", "Error: " + error.message)
