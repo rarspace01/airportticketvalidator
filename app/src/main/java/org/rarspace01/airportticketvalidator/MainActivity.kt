@@ -72,6 +72,8 @@ class MainActivity : AppCompatActivity() {
             jsonArrayDepartingFlights = response.getJSONObject("FlightStatusResource").getJSONObject("Flights").getJSONArray("Flight")
 
             // parse Flights to Array of Flights
+            val flights = FlightFactory.createFlightsFromJSONArray(jsonArrayDepartingFlights)
+            //flights.contains()
 
             Toast.makeText(this@MainActivity, "" + response.toString(), Toast.LENGTH_SHORT).show()
         }, Response.ErrorListener { error ->

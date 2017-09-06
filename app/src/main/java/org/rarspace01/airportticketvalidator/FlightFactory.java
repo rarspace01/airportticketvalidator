@@ -3,18 +3,29 @@ package org.rarspace01.airportticketvalidator;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.rarspace01.airportticketvalidator.bcbp.model.IataCode;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class FlightFactory {
 
+	public static Flight createFlightFromBCBP(IataCode inputBCBP) {
+		Flight returnFlight = null;
 
-	public static void main(String[] args) {
+		if (inputBCBP != null) {
+			returnFlight = new Flight();
+			returnFlight.fromAirport = inputBCBP.getFirstFlightSegment().getFromCity();
+			returnFlight.toAirport = inputBCBP.getFirstFlightSegment().getFromCity();
+			returnFlight.flightName = inputBCBP.getFirstFlightSegment().getFlightNumber().replaceAll("[0-9]", "");
+			returnFlight.flightNumber = Integer.parseInt(inputBCBP.getFirstFlightSegment().getFlightNumber().replaceAll("[A-Za-z]", ""));
+//			returnFlight.
+		}
 
+		return returnFlight;
 	}
 
-	List<Flight> createFlightsFromJSONArray(JSONArray inputJSON) {
+	public static List<Flight> createFlightsFromJSONArray(JSONArray inputJSON) {
 
 		List<Flight> localList = new ArrayList<>();
 
@@ -22,6 +33,8 @@ public class FlightFactory {
 			try {
 				JSONObject localFlight = inputJSON.getJSONObject(i);
 
+				Flight readFlight = flightFromJSONObject(localFlight);
+				localList.add(readFlight);
 
 			} catch (JSONException e) {
 				e.printStackTrace();
@@ -31,7 +44,7 @@ public class FlightFactory {
 		return localList;
 	}
 
-	private Flight flightFromJSONObject(JSONObject jsonObject) {
+	private static Flight flightFromJSONObject(JSONObject jsonObject) {
 		Flight returnFlight = null;
 
 		try {
