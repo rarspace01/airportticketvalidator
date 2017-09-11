@@ -31,12 +31,12 @@ public class FlightUtil {
 		boolean isFLightNumberMatching = false;
 
 		if (isMarketedCarrierMatching(currentFlight, flightToBeSearched)) {
-			if (isFlightNumberLiteralMatching(currentFlight, flightToBeSearched)) {
+			if (isFlightNumberLiteralMatchingMarketed(currentFlight, flightToBeSearched)) {
 				isFLightNumberMatching = true;
 			}
 		} else if (isOperatedCarrierMatching(currentFlight, flightToBeSearched)) {
 			// on operator match
-			if (isFlightNumberLiteralMatching(currentFlight, flightToBeSearched)) {
+			if (isFlightNumberLiteralMatchingOperated(currentFlight, flightToBeSearched)) {
 				isFLightNumberMatching = true;
 			}
 		}
@@ -44,16 +44,20 @@ public class FlightUtil {
 		return isFLightNumberMatching;
 	}
 
-	private static boolean isFlightNumberLiteralMatching(Flight currentFlight, Flight flightToBeSearched) {
+	private static boolean isFlightNumberLiteralMatchingMarketed(Flight currentFlight, Flight flightToBeSearched) {
 		return currentFlight.flightNumberMarketed == flightToBeSearched.flightNumberMarketed;
 	}
 
+	private static boolean isFlightNumberLiteralMatchingOperated(Flight currentFlight, Flight flightToBeSearched) {
+		return currentFlight.flightNumberOperated == flightToBeSearched.flightNumberOperated;
+	}
+
 	private static boolean isOperatedCarrierMatching(Flight flightToBeSearched, Flight flightCarrierOperated) {
-		return flightToBeSearched.flightCarrierMarketed.equals(flightCarrierOperated.flightCarrierOperated);
+		return flightToBeSearched.flightCarrierMarketed.trim().equals(flightCarrierOperated.flightCarrierOperated.trim());
 	}
 
 	private static boolean isMarketedCarrierMatching(Flight flightToBeSearched, Flight flightMarketedOperated) {
-		return flightToBeSearched.flightCarrierMarketed.equals(flightMarketedOperated.flightCarrierMarketed);
+		return flightToBeSearched.flightCarrierMarketed.trim().equals(flightMarketedOperated.flightCarrierMarketed.trim());
 	}
 
 	private static boolean isTimeCloseBy(Flight currentFlight, Flight flightToBeSearched) {

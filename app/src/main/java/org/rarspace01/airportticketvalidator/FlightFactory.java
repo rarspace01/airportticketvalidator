@@ -21,9 +21,9 @@ public class FlightFactory {
 			returnFlight = new Flight();
 			returnFlight.fromAirport = inputBCBP.getFirstFlightSegment().getFromCity();
 			returnFlight.toAirport = inputBCBP.getFirstFlightSegment().getFromCity();
-			returnFlight.flightCarrierMarketed = inputBCBP.getFirstFlightSegment().getFlightNumber().replaceAll("[0-9]", "");
+			returnFlight.flightCarrierOperated = inputBCBP.getFirstFlightSegment().getOperatingCarrierDesignator();
 			returnFlight.flightNumberMarketed = Integer.parseInt(inputBCBP.getFirstFlightSegment().getFlightNumber().replaceAll("[A-Za-z]", ""));
-
+			returnFlight.flightTime = inputBCBP.getFirstFlightSegment().getDateOfFlight().getTime();
 		}
 
 		return returnFlight;
@@ -58,7 +58,7 @@ public class FlightFactory {
 			JSONObject arrival = jsonObject.getJSONObject("Arrival");
 
 			returnFlight.fromAirport = departure.getString("AirportCode");
-			returnFlight.flightTime = parserDate.parse(departure.getString("ScheduledTime"));
+			returnFlight.flightTime = parserDate.parse(departure.getString("ScheduledTimeLocal"));
 			returnFlight.toAirport = arrival.getString("AirportCode");
 			returnFlight.flightCarrierMarketed = jsonObject.getJSONObject("MarketingCarrier").getString("AirlineID");
 			returnFlight.flightNumberMarketed = Integer.parseInt(jsonObject.getJSONObject("MarketingCarrier").getString("FlightNumber"));
