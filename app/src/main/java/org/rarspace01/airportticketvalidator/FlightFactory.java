@@ -5,10 +5,14 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.rarspace01.airportticketvalidator.bcbp.model.IataCode;
 
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.List;
 
 public class FlightFactory {
+
+	private static SimpleDateFormat parserDate = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm");
 
 	public static Flight createFlightFromBCBP(IataCode inputBCBP) {
 		Flight returnFlight = null;
@@ -17,9 +21,9 @@ public class FlightFactory {
 			returnFlight = new Flight();
 			returnFlight.fromAirport = inputBCBP.getFirstFlightSegment().getFromCity();
 			returnFlight.toAirport = inputBCBP.getFirstFlightSegment().getFromCity();
-			returnFlight.flightName = inputBCBP.getFirstFlightSegment().getFlightNumber().replaceAll("[0-9]", "");
-			returnFlight.flightNumber = Integer.parseInt(inputBCBP.getFirstFlightSegment().getFlightNumber().replaceAll("[A-Za-z]", ""));
-//			returnFlight.
+			returnFlight.flightCarrierMarketed = inputBCBP.getFirstFlightSegment().getFlightNumber().replaceAll("[0-9]", "");
+			returnFlight.flightNumberMarketed = Integer.parseInt(inputBCBP.getFirstFlightSegment().getFlightNumber().replaceAll("[A-Za-z]", ""));
+
 		}
 
 		return returnFlight;
@@ -48,11 +52,23 @@ public class FlightFactory {
 		Flight returnFlight = null;
 
 		try {
-			jsonObject = new JSONObject("{\"Departure\":{\"AirportCode\":\"HAM\",\"ScheduledTimeLocal\":{\"DateTime\":\"2017-09-05T17:15\"},\"ScheduledTimeUTC\":{\"DateTime\":\"2017-09-05T15:15Z\"},\"TimeStatus\":{\"Code\":\"OT\",\"Definition\":\"Flight On Time\"},\"Terminal\":{\"Name\":2,\"Gate\":\"A18\"}},\"Arrival\":{\"AirportCode\":\"STR\",\"ScheduledTimeLocal\":{\"DateTime\":\"2017-09-05T18:30\"},\"ScheduledTimeUTC\":{\"DateTime\":\"2017-09-05T16:30Z\"},\"TimeStatus\":{\"Code\":\"OT\",\"Definition\":\"Flight On Time\"},\"Terminal\":{\"Name\":1}},\"MarketingCarrier\":{\"AirlineID\":\"4U\",\"FlightNumber\":2041},\"OperatingCarrier\":{\"AirlineID\":\"4U\",\"FlightNumber\":2041},\"Equipment\":{\"AircraftCode\":319},\"FlightStatus\":{\"Code\":\"NA\",\"Definition\":\"No status\"}}");
+			Flight localFlight = new Flight();
 
-			jsonObject.getJSONObject("Departure");
+			JSONObject departure = jsonObject.getJSONObject("Departure");
+			JSONObject arrival = jsonObject.getJSONObject("Arrival");
+
+			localFlight.fromAirport = departure.getString("AirportCode");
+			localFlight.flightTime = parserDate.parse(departure.getString("ScheduledTime"));
+			localFlight.toAirport = arrival.getString("AirportCode");
+			localFlight.flightCarrierMarketed = jsonObject.getJSONObject("MarketingCarrier").getString("AirlineID");
+			localFlight.flightNumberMarketed = Integer.parseInt(jsonObject.getJSONObject("MarketingCarrier").getString("FlightNumber"));
+			localFlight.flightCarrierOperated = jsonObject.getJSONObject("OperatingCarrier").getString("AirlineID");
+			localFlight.flightNumberOperated = Integer.parseInt(jsonObject.getJSONObject("OperatingCarrier").getString("FlightNumber"));
+			localFlight.aircraft = jsonObject.getJSONObject("Equipment").getString("AircraftCode");
 
 		} catch (JSONException e) {
+			e.printStackTrace();
+		} catch (ParseException e) {
 			e.printStackTrace();
 		}
 

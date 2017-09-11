@@ -19,9 +19,12 @@ import org.json.JSONObject
 import org.rarspace01.airportticketvalidator.bcbp.Parser
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 class MainActivity : AppCompatActivity() {
+
+    val cachedFlightList: ArrayList<Flight> = ArrayList<Flight>();
 
     var jsonArrayDepartingFlights = JSONArray()
 
@@ -33,7 +36,8 @@ class MainActivity : AppCompatActivity() {
         btn_Scan.setOnClickListener({ view ->
             IntentIntegrator(this).setBeepEnabled(false).setOrientationLocked(false).initiateScan()
         })
-        getDepartingFlights("HAM")
+        cachedFlightList.addAll(getDepartingFlights("HAM"))
+        //cachedFlightList.addAll(getDepartingFlights("HAM"));
     }
 
 
@@ -48,10 +52,17 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Scanned: " + result.contents, Toast.LENGTH_LONG).show()
                 val bcbpParser = Parser()
                 val readTicket = bcbpParser.parse(result.contents)
+
                 Log.d("City from: ", readTicket.firstFlightSegment.fromCity)
                 var airportText = findViewById<EditText>(R.id.txtAirport)
-                getDepartingFlights(airportText.text.toString())
+                //getDepartingFlights(airportText.text.toString())
                 // wait till Flights are requested
+
+                val bcbpFlight = FlightFactory.createFlightFromBCBP(readTicket)
+
+                if (FlightUtil.isFlightInList(bcbpFlight, cachedFlightList)) {
+                    Toast.makeText(this, "Valid Ticket!", Toast.LENGTH_LONG).show()
+                }
 
             }
         } else {
@@ -60,26 +71,28 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun getDepartingFlights(airportCode: String): JSONArray {
-
+    fun getDepartingFlights(airportCode: String): List<Flight> {
+        var isProccessed = false;
+        val flights = ArrayList<Flight>();
         val currentDate = Date()
         val dateFormatter = SimpleDateFormat("YYYY-MM-dd'T'HH:mm")
         var departedPage = "https://api.lufthansa.com/v1/operations/flightstatus/departures/" + airportCode + "/" + dateFormatter.format(currentDate) + "?limit=100"
         val queue = Volley.newRequestQueue(this)
+
         val req = object : JsonObjectRequest(Request.Method.GET, departedPage,
                 null, Response.Listener<JSONObject> { response ->
             Log.d("Response", response.toString())
             jsonArrayDepartingFlights = response.getJSONObject("FlightStatusResource").getJSONObject("Flights").getJSONArray("Flight")
 
             // parse Flights to Array of Flights
-            val flights = FlightFactory.createFlightsFromJSONArray(jsonArrayDepartingFlights)
-            //flights.contains()
+            flights.addAll(FlightFactory.createFlightsFromJSONArray(jsonArrayDepartingFlights))
 
-            Toast.makeText(this@MainActivity, "" + response.toString(), Toast.LENGTH_SHORT).show()
+            isProccessed = true;
+
         }, Response.ErrorListener { error ->
             VolleyLog.d("Error", "Error: " + error.message)
+            isProccessed = true;
             Toast.makeText(this@MainActivity, "" + error.message, Toast.LENGTH_SHORT).show()
-
         }) {
             override fun getBodyContentType(): String {
                 return "application/json; charset=utf-8"
@@ -88,12 +101,18 @@ class MainActivity : AppCompatActivity() {
             @Throws(AuthFailureError::class)
             override fun getHeaders(): Map<String, String> {
                 val headers = HashMap<String, String>()
-                headers.put("Authorization", "Bearer 8fsghn2r6mqeqs4ce8rq3n29")
+                headers.put("Authorization", "Bearer 83kffu3m88khw3bhmer8fgp7")
                 return headers
             }
         }
 
         queue.add(req)
-        return jsonArrayDepartingFlights
+
+        while (!isProccessed) {
+            Thread.sleep(1000)
+            Log.d("sleep", "w")
+        }
+
+        return flights
     }
 }

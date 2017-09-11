@@ -6,7 +6,10 @@ public class Flight {
 	public String fromAirport;
 	public String toAirport;
 	public String flightName;
-	public int flightNumber;
+	public String flightCarrierMarketed;
+	public int flightNumberMarketed;
+	public String flightCarrierOperated;
+	public int flightNumberOperated;
 	public Date flightTime;
 	public String aircraft;
 }
