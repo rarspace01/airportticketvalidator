@@ -36,8 +36,8 @@ class MainActivity : AppCompatActivity() {
         btn_Scan.setOnClickListener({ view ->
             IntentIntegrator(this).setBeepEnabled(false).setOrientationLocked(false).initiateScan()
         })
-        cachedFlightList.addAll(getDepartingFlights("HAM"))
-        //cachedFlightList.addAll(getDepartingFlights("HAM"));
+
+        cachedFlightList.addAll(getDepartingFlights("HAM"));
     }
 
 
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity() {
             jsonArrayDepartingFlights = response.getJSONObject("FlightStatusResource").getJSONObject("Flights").getJSONArray("Flight")
 
             // parse Flights to Array of Flights
-            flights.addAll(FlightFactory.createFlightsFromJSONArray(jsonArrayDepartingFlights))
+            cachedFlightList.addAll(FlightFactory.createFlightsFromJSONArray(jsonArrayDepartingFlights))
 
             isProccessed = true;
 
@@ -107,11 +107,6 @@ class MainActivity : AppCompatActivity() {
         }
 
         queue.add(req)
-
-        while (!isProccessed) {
-            Thread.sleep(1000)
-            Log.d("sleep", "w")
-        }
 
         return flights
     }

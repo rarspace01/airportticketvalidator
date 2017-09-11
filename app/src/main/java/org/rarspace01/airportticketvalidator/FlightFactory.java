@@ -52,23 +52,20 @@ public class FlightFactory {
 		Flight returnFlight = null;
 
 		try {
-			Flight localFlight = new Flight();
+			returnFlight = new Flight();
 
 			JSONObject departure = jsonObject.getJSONObject("Departure");
 			JSONObject arrival = jsonObject.getJSONObject("Arrival");
 
-			localFlight.fromAirport = departure.getString("AirportCode");
-			localFlight.flightTime = parserDate.parse(departure.getString("ScheduledTime"));
-			localFlight.toAirport = arrival.getString("AirportCode");
-			localFlight.flightCarrierMarketed = jsonObject.getJSONObject("MarketingCarrier").getString("AirlineID");
-			localFlight.flightNumberMarketed = Integer.parseInt(jsonObject.getJSONObject("MarketingCarrier").getString("FlightNumber"));
-			localFlight.flightCarrierOperated = jsonObject.getJSONObject("OperatingCarrier").getString("AirlineID");
-			localFlight.flightNumberOperated = Integer.parseInt(jsonObject.getJSONObject("OperatingCarrier").getString("FlightNumber"));
-			localFlight.aircraft = jsonObject.getJSONObject("Equipment").getString("AircraftCode");
-
-		} catch (JSONException e) {
-			e.printStackTrace();
-		} catch (ParseException e) {
+			returnFlight.fromAirport = departure.getString("AirportCode");
+			returnFlight.flightTime = parserDate.parse(departure.getString("ScheduledTime"));
+			returnFlight.toAirport = arrival.getString("AirportCode");
+			returnFlight.flightCarrierMarketed = jsonObject.getJSONObject("MarketingCarrier").getString("AirlineID");
+			returnFlight.flightNumberMarketed = Integer.parseInt(jsonObject.getJSONObject("MarketingCarrier").getString("FlightNumber"));
+			returnFlight.flightCarrierOperated = jsonObject.getJSONObject("OperatingCarrier").getString("AirlineID");
+			returnFlight.flightNumberOperated = Integer.parseInt(jsonObject.getJSONObject("OperatingCarrier").getString("FlightNumber"));
+			returnFlight.aircraft = jsonObject.getJSONObject("Equipment").getString("AircraftCode");
+		} catch (JSONException | ParseException e) {
 			e.printStackTrace();
 		}
 
