@@ -4,6 +4,7 @@ import android.content.Intent
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.widget.Button
 import android.widget.EditText
 import android.widget.Toast
 import com.android.volley.AuthFailureError
@@ -11,6 +12,7 @@ import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.VolleyLog
 import com.android.volley.toolbox.JsonObjectRequest
+import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
 import com.google.zxing.integration.android.IntentIntegrator
 import kotlinx.android.synthetic.main.activity_main.*
@@ -32,12 +34,14 @@ class MainActivity : AppCompatActivity() {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        //val btnSearch = findViewById<Button>(R.id.btn_Scan)
-        btn_Scan.setOnClickListener({ view ->
+        getAccessToken("92yftjvaf7ergeep9ypg823k","mYdFSfayQD")
+
+        val btnScan = findViewById<Button>(R.id.btn_Scan)
+        btnScan.setOnClickListener({ view ->
             IntentIntegrator(this).setBeepEnabled(false).setOrientationLocked(false).initiateScan()
         })
 
-        cachedFlightList.addAll(getDepartingFlights("HAM"));
+        //cachedFlightList.addAll(getDepartingFlights("HAM"));
     }
 
 
@@ -69,6 +73,39 @@ class MainActivity : AppCompatActivity() {
             // This is important, otherwise the result will not be passed to the fragment
             super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    private var jsonAuth:String = "";
+
+    fun getAccessToken(clientID: String, clientSecret: String) {
+        val queue = Volley.newRequestQueue(this)
+
+        val authPage = "https://api.lufthansa.com/v1/oauth/token"
+        val req = object : JsonObjectRequest(Request.Method.POST, authPage,
+                null, Response.Listener<JSONObject> { response ->
+            Log.d("Response", response.toString())
+            jsonAuth = response.getString("access_token")
+
+        }, Response.ErrorListener { error ->
+            VolleyLog.d("Error", "Error: " + error.message)
+            Toast.makeText(this@MainActivity, "" + error.message, Toast.LENGTH_SHORT).show()
+        }) {
+            override fun getBodyContentType(): String {
+                return "application/x-www-form-urlencoded"
+            }
+
+            override fun getParams(): MutableMap<String, String> {
+                var paramMap = HashMap<String,String>()
+
+                paramMap.put("client_id",clientID)
+                paramMap.put("client_secret",clientSecret)
+                paramMap.put("grant_type","client_credentials")
+
+                return paramMap
+            }
+        }
+
+        queue.add(req)
     }
 
     fun getDepartingFlights(airportCode: String): List<Flight> {
