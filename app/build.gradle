@@ -39,7 +39,7 @@ dependencies {
     implementation 'com.journeyapps:zxing-android-embedded:3.5.0'
     implementation 'com.android.volley:volley:1.0.0'
     implementation 'org.fitnesse:fitnesse:20161106'
-    fitnesse 'org.fitnesse:fitnesse:20161106'
+    //fitnesse 'org.fitnesse:fitnesse:20161106'
     //implementation 'com.google.zxing:android-core:3.3.0'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'com.android.support.test:runner:1.0.1'
