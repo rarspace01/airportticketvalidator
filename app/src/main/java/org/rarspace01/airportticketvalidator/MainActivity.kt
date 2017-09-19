@@ -60,6 +60,8 @@ class MainActivity : AppCompatActivity() {
 
                 if (FlightUtil.isFlightInList(bcbpFlight, cachedFlightList)) {
                     Toast.makeText(this, "Valid Ticket!", Toast.LENGTH_LONG).show()
+                } else {
+                    Toast.makeText(this, "Non valid Ticket!", Toast.LENGTH_LONG).show()
                 }
 
             }
