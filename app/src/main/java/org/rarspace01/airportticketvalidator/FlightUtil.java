@@ -15,7 +15,7 @@ public class FlightUtil {
 
 			if (currentFlight != null && flightToBeSearched != null && currentFlight.fromAirport.equals(flightToBeSearched.fromAirport) &&
 					currentFlight.toAirport.equals(flightToBeSearched.toAirport) &&
-					isFLightNumberMatching(currentFlight, flightToBeSearched) &&
+					isFlightNumberMatching(currentFlight, flightToBeSearched) &&
 					isTimeCloseBy(currentFlight, flightToBeSearched)) {
 				isFound = true;
 				break;
@@ -27,7 +27,7 @@ public class FlightUtil {
 		return isFound;
 	}
 
-	private static boolean isFLightNumberMatching(Flight currentFlight, Flight flightToBeSearched) {
+	private static boolean isFlightNumberMatching(Flight currentFlight, Flight flightToBeSearched) {
 		boolean isFLightNumberMatching = false;
 
 		if (isMarketedCarrierMatching(currentFlight, flightToBeSearched)) {
