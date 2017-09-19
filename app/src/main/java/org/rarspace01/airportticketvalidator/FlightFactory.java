@@ -26,9 +26,9 @@ public class FlightFactory {
 		if (inputBCBP != null) {
 			returnFlight = new Flight();
 			returnFlight.fromAirport = inputBCBP.getFirstFlightSegment().getFromCity();
-			returnFlight.toAirport = inputBCBP.getFirstFlightSegment().getFromCity();
+			returnFlight.toAirport = inputBCBP.getFirstFlightSegment().getToCity();
 			returnFlight.flightCarrierOperated = inputBCBP.getFirstFlightSegment().getOperatingCarrierDesignator();
-			returnFlight.flightNumberMarketed = Integer.parseInt(inputBCBP.getFirstFlightSegment().getFlightNumber().replaceAll("[A-Za-z]", ""));
+			returnFlight.flightNumberOperated = Integer.parseInt(inputBCBP.getFirstFlightSegment().getFlightNumber().replaceAll("[A-Za-z]", ""));
 			returnFlight.flightTime = inputBCBP.getFirstFlightSegment().getDateOfFlight().getTime();
 		}
 
