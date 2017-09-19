@@ -131,7 +131,9 @@ public class FlightFactory {
 					}
 				}
 			}
-			localList.add(flight);
+			if(flight.fromAirport != null && flight.toAirport != null){
+				localList.add(flight);
+			}
 		}
 
 		return localList;

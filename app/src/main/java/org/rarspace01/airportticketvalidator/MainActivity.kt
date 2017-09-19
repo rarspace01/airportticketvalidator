@@ -1,11 +1,13 @@
 package org.rarspace01.airportticketvalidator
 
 import android.content.Intent
+import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.Button
 import android.widget.EditText
+import android.widget.ProgressBar
 import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.Response
@@ -18,11 +20,19 @@ import org.rarspace01.airportticketvalidator.bcbp.Parser
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+import android.graphics.Bitmap
+import com.google.zxing.BarcodeFormat
+import com.google.zxing.common.BitMatrix
+import android.R.attr.data
+import android.net.Uri
+import com.google.zxing.MultiFormatWriter
+import java.nio.charset.Charset
+import kotlin.collections.HashMap
 
 
 class MainActivity : AppCompatActivity() {
 
-    val cachedFlightList: ArrayList<Flight> = ArrayList<Flight>();
+    val cachedFlightList: ArrayList<Flight> = ArrayList<Flight>()
 
     var jsonArrayDepartingFlights = JSONArray()
 
@@ -31,6 +41,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val btnScan = findViewById<Button>(R.id.btn_Scan)
+        setProgressBar(0)
+
         btnScan.setOnClickListener({ view ->
             IntentIntegrator(this).setBeepEnabled(false).setOrientationLocked(false).initiateScan()
         })
@@ -38,6 +50,24 @@ class MainActivity : AppCompatActivity() {
         getDepartingFlights("HAM");
     }
 
+    private fun setProgressBar(progress: Int) {
+        val progressbar = findViewById<ProgressBar>(R.id.databasePogressBar)
+        progressbar.progress = progress
+    }
+
+    private fun setBackgroundSuccess(isSuccessfull: Boolean) {
+        val resultButton = findViewById<Button>(R.id.btn_result)
+        if(isSuccessfull) {
+            resultButton.setBackgroundColor(Color.GREEN)
+        } else {
+            resultButton.setBackgroundColor(Color.RED)
+        }
+    }
+
+    private fun resetBackgroundSuccess() {
+        val resultButton = findViewById<Button>(R.id.btn_result)
+            resultButton.setBackgroundColor(Color.GRAY)
+    }
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
@@ -47,7 +77,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
             } else {
                 Log.d("MainActivity", "Scanned")
-                Toast.makeText(this, "Scanned: " + result.contents, Toast.LENGTH_LONG).show()
+                //Toast.makeText(this, "Scanned: " + result.contents, Toast.LENGTH_LONG).show()
                 val bcbpParser = Parser()
                 val readTicket = bcbpParser.parse(result.contents)
 
@@ -60,8 +90,12 @@ class MainActivity : AppCompatActivity() {
 
                 if (FlightUtil.isFlightInList(bcbpFlight, cachedFlightList)) {
                     Toast.makeText(this, "Valid Ticket!", Toast.LENGTH_LONG).show()
+                    setBackgroundSuccess(true)
+                    postOnSlack(readTicket.passengerName + " had an valid Ticket!\uE312")
                 } else {
                     Toast.makeText(this, "Non valid Ticket!", Toast.LENGTH_LONG).show()
+                    setBackgroundSuccess(false)
+                    postOnSlack(readTicket.passengerName + " had an invalid Ticket")
                 }
 
             }
@@ -83,12 +117,13 @@ class MainActivity : AppCompatActivity() {
 
         val req = object : StringRequest(Request.Method.GET, departedPage,
                 Response.Listener<String> { response ->
-                    Log.d("Response", response)
+                    //Log.d("Response", response)
 
                     // parse Flights to Array of Flights
                     cachedFlightList.addAll(FlightFactory.createFlightsFromXMLSource(response))
 
                     isProccessed = true;
+                    setProgressBar(100)
 
                 }, Response.ErrorListener { error ->
             VolleyLog.d("Error", "Error: " + error.message)
@@ -100,4 +135,41 @@ class MainActivity : AppCompatActivity() {
 
         return flights
     }
+
+    private fun createBarcodeBitmap(data:String, width:Int, height:Int):Bitmap {
+        val writer = MultiFormatWriter()
+        val finalData = Uri.encode(data)
+        // Use 1 as the height of the matrix as this is a 1D Barcode.
+        val bm = writer.encode(finalData, BarcodeFormat.AZTEC, width, height)
+        val bmWidth = bm.getWidth()
+        val imageBitmap = Bitmap.createBitmap(bmWidth, height, Bitmap.Config.ARGB_8888)
+        return imageBitmap
+    }
+
+    private fun postOnSlack(message:String) {
+        var slackHookPage = "https://hooks.slack.com/services/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"
+        val queue = Volley.newRequestQueue(this)
+
+        val req = object : StringRequest(Request.Method.POST, slackHookPage,
+                Response.Listener<String> { response ->
+
+                }, Response.ErrorListener { error ->
+            VolleyLog.d("Error", "Error: " + error.message)
+
+        }) {
+
+            override fun getBody(): ByteArray {
+                var fakeJSON = "{\"text\":\""+message+"\"}"
+                return fakeJSON.toByteArray()
+            }
+
+            override fun getBodyContentType(): String {
+                return "application/json"
+            }
+
+        }
+
+        queue.add(req)
+    }
+
 }

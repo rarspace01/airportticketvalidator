@@ -13,7 +13,7 @@ public class FlightUtil {
 
 		for (Flight currentFlight : listOfFlights) {
 
-			if (currentFlight.fromAirport.equals(flightToBeSearched.fromAirport) &&
+			if (currentFlight != null && flightToBeSearched != null && currentFlight.fromAirport.equals(flightToBeSearched.fromAirport) &&
 					currentFlight.toAirport.equals(flightToBeSearched.toAirport) &&
 					isFLightNumberMatching(currentFlight, flightToBeSearched) &&
 					isTimeCloseBy(currentFlight, flightToBeSearched)) {
