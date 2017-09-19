@@ -5,10 +5,6 @@ import android.graphics.Color
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
-import android.widget.Button
-import android.widget.EditText
-import android.widget.ProgressBar
-import android.widget.Toast
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.VolleyLog
@@ -25,7 +21,10 @@ import com.google.zxing.BarcodeFormat
 import com.google.zxing.common.BitMatrix
 import android.R.attr.data
 import android.net.Uri
+import android.view.View
+import android.widget.*
 import com.google.zxing.MultiFormatWriter
+import org.rarspace01.airportticketvalidator.bcbp.model.IataCode
 import java.nio.charset.Charset
 import kotlin.collections.HashMap
 
@@ -35,6 +34,7 @@ class MainActivity : AppCompatActivity() {
     val cachedFlightList: ArrayList<Flight> = ArrayList<Flight>()
 
     var jsonArrayDepartingFlights = JSONArray()
+    var longClicks = 0
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -45,6 +45,14 @@ class MainActivity : AppCompatActivity() {
 
         btnScan.setOnClickListener({ view ->
             IntentIntegrator(this).setBeepEnabled(false).setOrientationLocked(false).initiateScan()
+        })
+
+        btnScan.setOnLongClickListener({view ->
+        val bcbpCode = findViewById<ImageView>(R.id.bcbpCode)
+            val bcbpRawData = "M1HAMANN/DENIS         CFZV2H FRAHAMLH 0001 253Y001A0018 147>1181  7250BEW 0000000000000291040000000000 0   LH 992003667193035     "
+            val barcodeBitmap = createBarcodeBitmap(bcbpRawData, 250, 250)
+            bcbpCode.setImageBitmap(barcodeBitmap)
+            true
         })
 
         getDepartingFlights("HAM");

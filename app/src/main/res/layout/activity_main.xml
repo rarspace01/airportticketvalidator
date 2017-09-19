@@ -67,8 +67,10 @@
     </RelativeLayout>
 
     <ImageView
+        android:id="@+id/bcbpCode"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"/>
+        android:layout_height="wrap_content"
+        android:contentDescription="@string/bcbp_code"/>
 
 
 </android.support.constraint.ConstraintLayout>
