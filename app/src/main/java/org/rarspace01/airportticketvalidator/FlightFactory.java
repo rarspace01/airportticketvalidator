@@ -79,19 +79,23 @@ public class FlightFactory {
 	public static List<Flight> createFlightsFromXMLSource(String response) {
 		List<Flight> localList = new ArrayList<>();
 
+		if (!response.contains("<table")) {
+			response = "<table>" + response + "</table>";
+		}
+
 		Document doc = Jsoup.parse(response);
 		Elements trElements = doc.body().getElementsByTag("tr");
 		for (Element element : trElements) {
 			Flight flight = new Flight();
 			Elements dataElements = element.getElementsByTag("td");
 			for (Element tdElement : dataElements) {
-				if (tdElement.data().matches("[0-9]{2,2}:[0-9]{2,2}")) {
+				if (tdElement.text().matches("[0-9]{2,2}:[0-9]{2,2}")) {
 					//flight.flightTime = new Date
-				} else if (tdElement.data().matches(".*[-]\\s{0,1}[A-Za-z]{1,4}")) {
+				} else if (tdElement.text().matches(".*[-]\\s{0,1}[A-Za-z]{1,4}")) {
 					flight.fromAirport = "HAM";
-					flight.toAirport = tdElement.val().replaceAll(".*[-]", "").trim();
+					flight.toAirport = tdElement.text().replaceAll(".*[-]", "").trim();
 				} else if (tdElement.attributes().get("data-title").contains("Flight")) {
-					String[] splittedFlightnumber = tdElement.val().split(" ");
+					String[] splittedFlightnumber = tdElement.text().split(" ");
 					if (splittedFlightnumber.length == 2) {
 						flight.flightCarrierMarketed = splittedFlightnumber[0];
 						flight.flightNumberMarketed = Integer.parseInt(splittedFlightnumber[1]);
