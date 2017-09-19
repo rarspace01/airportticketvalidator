@@ -63,7 +63,9 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showCode() {
-        val bcbpRawData = "M1TESTER/TASTUR        AAAAAH FRAHAMLH 0001 253Y001A0018 147>1181  7250BEW 0000000000000291040000000000 0   LH 992003667193035     "
+        var dayOfTheYear = "000"+Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
+        dayOfTheYear = dayOfTheYear.substring(dayOfTheYear.length-4,dayOfTheYear.length-1)
+        val bcbpRawData = "M1TESTER/TASTUR        AAAAAH HAMFRALH 0001 " + dayOfTheYear + "Y001A0018 147>1181  7250BEW 0000000000000291040000000000 0   LH 992003667193035     "
         val context = this
         val intent = Intent("com.google.zxing.client.android.ENCODE")
         intent.putExtra("ENCODE_TYPE", "Text")
@@ -137,7 +139,6 @@ class MainActivity : AppCompatActivity() {
         var isProccessed = false;
         val flights = ArrayList<Flight>();
         val currentDate = Date()
-        val dateFormatter = SimpleDateFormat("YYYY-MM-dd'T'HH:mm")
         var departedPage = "https://www.hamburg-airport.de/tools/flightplan/flightplan_detail.php/en/departures/today/"
         val queue = Volley.newRequestQueue(this)
 

@@ -15,10 +15,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class FlightFactory {
 
-	private static SimpleDateFormat parserDate = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm");
+	private static SimpleDateFormat parserDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.UK);
 
 	public static Flight createFlightFromBCBP(IataCode inputBCBP) {
 		Flight returnFlight = null;

@@ -57,7 +57,11 @@ public class FlightUtil {
 	}
 
 	private static boolean isMarketedCarrierMatching(Flight flightToBeSearched, Flight flightMarketedOperated) {
-		return flightToBeSearched.flightCarrierMarketed.trim().equals(flightMarketedOperated.flightCarrierMarketed.trim());
+		if(flightToBeSearched.flightCarrierMarketed != null && flightMarketedOperated.flightCarrierMarketed != null) {
+			return flightToBeSearched.flightCarrierMarketed.trim().equals(flightMarketedOperated.flightCarrierMarketed.trim());
+		} else {
+			return false;
+		}
 	}
 
 	private static boolean isTimeCloseBy(Flight currentFlight, Flight flightToBeSearched) {
