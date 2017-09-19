@@ -20,11 +20,13 @@ import android.graphics.Bitmap
 import com.google.zxing.BarcodeFormat
 import com.google.zxing.common.BitMatrix
 import android.R.attr.data
+import android.app.Activity
 import android.net.Uri
 import android.view.View
 import android.widget.*
 import com.google.zxing.MultiFormatWriter
 import org.rarspace01.airportticketvalidator.bcbp.model.IataCode
+import org.w3c.dom.Text
 import java.nio.charset.Charset
 import kotlin.collections.HashMap
 
@@ -49,13 +51,29 @@ class MainActivity : AppCompatActivity() {
 
         btnScan.setOnLongClickListener({view ->
         val bcbpCode = findViewById<ImageView>(R.id.bcbpCode)
-            val bcbpRawData = "M1HAMANN/DENIS         CFZV2H FRAHAMLH 0001 253Y001A0018 147>1181  7250BEW 0000000000000291040000000000 0   LH 992003667193035     "
-            val barcodeBitmap = createBarcodeBitmap(bcbpRawData, 250, 250)
+            /*val barcodeBitmap = createBarcodeBitmap(bcbpRawData, 250, 250)
             bcbpCode.setImageBitmap(barcodeBitmap)
+            bcbpCode.setBackgroundColor(Color.WHITE)
+            true*/
+            showCode()
             true
         })
 
         getDepartingFlights("HAM");
+    }
+
+    private fun showCode() {
+        val bcbpRawData = "M1TESTER/TASTUR        AAAAAH FRAHAMLH 0001 253Y001A0018 147>1181  7250BEW 0000000000000291040000000000 0   LH 992003667193035     "
+        val context = this
+        val intent = Intent("com.google.zxing.client.android.ENCODE")
+        intent.putExtra("ENCODE_TYPE", "Text")
+        intent.putExtra("ENCODE_DATA", bcbpRawData)
+        intent.putExtra("ENCODE_FORMAT", "AZTEC")
+        startActivity(intent)
+    }
+
+    private fun getActivity(): Activity {
+        return getActivity()
     }
 
     private fun setProgressBar(progress: Int) {
@@ -149,8 +167,13 @@ class MainActivity : AppCompatActivity() {
         val finalData = Uri.encode(data)
         // Use 1 as the height of the matrix as this is a 1D Barcode.
         val bm = writer.encode(finalData, BarcodeFormat.AZTEC, width, height)
-        val bmWidth = bm.getWidth()
-        val imageBitmap = Bitmap.createBitmap(bmWidth, height, Bitmap.Config.ARGB_8888)
+        val imageBitmap = Bitmap.createBitmap(width*2, height*2, Bitmap.Config.ARGB_8888)
+
+        for (i in 0..(width-1)) {//width
+            for (j in 0..(height-1)) {//height
+                imageBitmap.setPixel(i*2, j*2, if (bm.get(i, j)) Color.BLACK else Color.WHITE)
+            }
+        }
         return imageBitmap
     }
 
