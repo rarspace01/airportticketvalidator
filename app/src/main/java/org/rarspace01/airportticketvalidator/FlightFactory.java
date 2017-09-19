@@ -12,6 +12,8 @@ import org.rarspace01.airportticketvalidator.bcbp.model.IataCode;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.List;
 
 public class FlightFactory {
@@ -89,16 +91,43 @@ public class FlightFactory {
 			Flight flight = new Flight();
 			Elements dataElements = element.getElementsByTag("td");
 			for (Element tdElement : dataElements) {
-				if (tdElement.text().matches("[0-9]{2,2}:[0-9]{2,2}")) {
+				String elementText = tdElement.text();
+				if (elementText.matches("[0-9]{2,2}:[0-9]{2,2}")) {
+					String timeString = elementText;
+					try {
+						Date parseTime = new SimpleDateFormat("HH:mm").parse(timeString);
+						Calendar timeCalendar = Calendar.getInstance();
+						timeCalendar.setTime(parseTime);
+						Calendar calendar = Calendar.getInstance();
+						calendar.set(Calendar.HOUR_OF_DAY, timeCalendar.get(Calendar.HOUR_OF_DAY));
+						calendar.set(Calendar.MINUTE, timeCalendar.get(Calendar.MINUTE));
+						calendar.set(Calendar.SECOND, 0);
+						calendar.set(Calendar.MILLISECOND, 0);
+						flight.flightTime = calendar.getTime();
+					} catch (ParseException e) {
+						e.printStackTrace();
+					}
 					//flight.flightTime = new Date
-				} else if (tdElement.text().matches(".*[-]\\s{0,1}[A-Za-z]{1,4}")) {
+				} else if (elementText.matches(".*[-]\\s{0,1}[A-Za-z]{1,4}")) {
 					flight.fromAirport = "HAM";
-					flight.toAirport = tdElement.text().replaceAll(".*[-]", "").trim();
+					flight.toAirport = elementText.replaceAll(".*[-]", "").trim();
 				} else if (tdElement.attributes().get("data-title").contains("Flight")) {
-					String[] splittedFlightnumber = tdElement.text().split(" ");
+					String[] splittedFlightnumber = elementText.split(" ");
 					if (splittedFlightnumber.length == 2) {
 						flight.flightCarrierMarketed = splittedFlightnumber[0];
 						flight.flightNumberMarketed = Integer.parseInt(splittedFlightnumber[1]);
+					} else if (elementText.matches("[A-Z-a-z0-9]+[0-9]+")) {
+						// search last character & everythign behind is flightnumber && needs to be verified
+						int lastCharacter = -1;
+						for (int i = 0; i < elementText.length(); i++) {
+							if ((elementText.charAt(i) + "").matches("[A-Za-z]")) {
+								lastCharacter = i;
+							}
+						}
+						if (lastCharacter != -1) {
+							flight.flightCarrierMarketed = elementText.substring(0, lastCharacter < elementText.length() ? lastCharacter + 1 : elementText.length() - 1);
+							flight.flightNumberMarketed = Integer.parseInt(elementText.substring(lastCharacter < elementText.length() ? lastCharacter + 1 : elementText.length() - 1));
+						}
 					}
 				}
 			}
