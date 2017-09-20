@@ -45,7 +45,7 @@ public class FlightUtil {
 	}
 
 	private static boolean isFlightNumberLiteralMatchingMarketed(Flight currentFlight, Flight flightToBeSearched) {
-		return currentFlight.flightNumberMarketed == flightToBeSearched.flightNumberMarketed;
+		return currentFlight.flightNumberMarketed == flightToBeSearched.flightNumberOperated;
 	}
 
 	private static boolean isFlightNumberLiteralMatchingOperated(Flight currentFlight, Flight flightToBeSearched) {
@@ -53,12 +53,12 @@ public class FlightUtil {
 	}
 
 	private static boolean isOperatedCarrierMatching(Flight flightToBeSearched, Flight flightCarrierOperated) {
-		return flightToBeSearched.flightCarrierMarketed.trim().equals(flightCarrierOperated.flightCarrierOperated.trim());
+		return flightToBeSearched.flightCarrierOperated.trim().equals(flightCarrierOperated.flightCarrierOperated.trim());
 	}
 
 	private static boolean isMarketedCarrierMatching(Flight flightToBeSearched, Flight flightMarketedOperated) {
-		if(flightToBeSearched.flightCarrierMarketed != null && flightMarketedOperated.flightCarrierMarketed != null) {
-			return flightToBeSearched.flightCarrierMarketed.trim().equals(flightMarketedOperated.flightCarrierMarketed.trim());
+		if (flightToBeSearched.flightCarrierOperated != null && flightMarketedOperated.flightCarrierMarketed != null) {
+			return flightToBeSearched.flightCarrierOperated.trim().equals(flightMarketedOperated.flightCarrierMarketed.trim());
 		} else {
 			return false;
 		}
