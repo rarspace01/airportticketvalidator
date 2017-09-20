@@ -3,4 +3,6 @@
     <string name="enter_airport">Enter Airport:</string>
     <string name="scan">Scan</string>
     <string name="result">Result</string>
+    <string name="airportDefault">HAM</string>
+    <string name="bcbp_code">bcbp Code</string>
 </resources>

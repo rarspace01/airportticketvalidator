@@ -15,10 +15,11 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Locale;
 
 public class FlightFactory {
 
-	private static SimpleDateFormat parserDate = new SimpleDateFormat("YYYY-MM-dd'T'HH:mm");
+	private static SimpleDateFormat parserDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.UK);
 
 	public static Flight createFlightFromBCBP(IataCode inputBCBP) {
 		Flight returnFlight = null;
@@ -26,9 +27,9 @@ public class FlightFactory {
 		if (inputBCBP != null) {
 			returnFlight = new Flight();
 			returnFlight.fromAirport = inputBCBP.getFirstFlightSegment().getFromCity();
-			returnFlight.toAirport = inputBCBP.getFirstFlightSegment().getFromCity();
+			returnFlight.toAirport = inputBCBP.getFirstFlightSegment().getToCity();
 			returnFlight.flightCarrierOperated = inputBCBP.getFirstFlightSegment().getOperatingCarrierDesignator();
-			returnFlight.flightNumberMarketed = Integer.parseInt(inputBCBP.getFirstFlightSegment().getFlightNumber().replaceAll("[A-Za-z]", ""));
+			returnFlight.flightNumberOperated = Integer.parseInt(inputBCBP.getFirstFlightSegment().getFlightNumber().replaceAll("[A-Za-z]", ""));
 			returnFlight.flightTime = inputBCBP.getFirstFlightSegment().getDateOfFlight().getTime();
 		}
 
@@ -131,7 +132,9 @@ public class FlightFactory {
 					}
 				}
 			}
-			localList.add(flight);
+			if(flight.fromAirport != null && flight.toAirport != null){
+				localList.add(flight);
+			}
 		}
 
 		return localList;

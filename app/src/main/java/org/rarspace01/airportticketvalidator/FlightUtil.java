@@ -13,9 +13,9 @@ public class FlightUtil {
 
 		for (Flight currentFlight : listOfFlights) {
 
-			if (currentFlight.fromAirport.equals(flightToBeSearched.fromAirport) &&
+			if (currentFlight != null && flightToBeSearched != null && currentFlight.fromAirport.equals(flightToBeSearched.fromAirport) &&
 					currentFlight.toAirport.equals(flightToBeSearched.toAirport) &&
-					isFLightNumberMatching(currentFlight, flightToBeSearched) &&
+					isFlightNumberMatching(currentFlight, flightToBeSearched) &&
 					isTimeCloseBy(currentFlight, flightToBeSearched)) {
 				isFound = true;
 				break;
@@ -27,7 +27,7 @@ public class FlightUtil {
 		return isFound;
 	}
 
-	private static boolean isFLightNumberMatching(Flight currentFlight, Flight flightToBeSearched) {
+	private static boolean isFlightNumberMatching(Flight currentFlight, Flight flightToBeSearched) {
 		boolean isFLightNumberMatching = false;
 
 		if (isMarketedCarrierMatching(currentFlight, flightToBeSearched)) {
@@ -57,7 +57,11 @@ public class FlightUtil {
 	}
 
 	private static boolean isMarketedCarrierMatching(Flight flightToBeSearched, Flight flightMarketedOperated) {
-		return flightToBeSearched.flightCarrierMarketed.trim().equals(flightMarketedOperated.flightCarrierMarketed.trim());
+		if(flightToBeSearched.flightCarrierMarketed != null && flightMarketedOperated.flightCarrierMarketed != null) {
+			return flightToBeSearched.flightCarrierMarketed.trim().equals(flightMarketedOperated.flightCarrierMarketed.trim());
+		} else {
+			return false;
+		}
 	}
 
 	private static boolean isTimeCloseBy(Flight currentFlight, Flight flightToBeSearched) {
