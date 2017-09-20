@@ -149,6 +149,9 @@ class MainActivity : AppCompatActivity() {
                     // parse Flights to Array of Flights
                     cachedFlightList.addAll(FlightFactory.createFlightsFromXMLSource(response))
 
+                    val btnScan = findViewById<Button>(R.id.btn_Scan)
+                    btnScan.setText(resources.getString(R.string.scan) + "["+cachedFlightList.size+"]")
+
                     isProccessed = true;
                     setProgressBar(100)
 

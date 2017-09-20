@@ -30,11 +30,11 @@ public class FlightUtil {
 	private static boolean isFlightNumberMatching(Flight currentFlight, Flight flightToBeSearched) {
 		boolean isFLightNumberMatching = false;
 
-		if (isMarketedCarrierMatching(currentFlight, flightToBeSearched)) {
+		if (isMarketedCarrierMatching(flightToBeSearched, currentFlight)) {
 			if (isFlightNumberLiteralMatchingMarketed(currentFlight, flightToBeSearched)) {
 				isFLightNumberMatching = true;
 			}
-		} else if (isOperatedCarrierMatching(currentFlight, flightToBeSearched)) {
+		} else if (isOperatedCarrierMatching(flightToBeSearched, currentFlight)) {
 			// on operator match
 			if (isFlightNumberLiteralMatchingOperated(currentFlight, flightToBeSearched)) {
 				isFLightNumberMatching = true;
