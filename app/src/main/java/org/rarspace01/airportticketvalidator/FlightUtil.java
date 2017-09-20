@@ -53,7 +53,11 @@ public class FlightUtil {
 	}
 
 	private static boolean isOperatedCarrierMatching(Flight flightToBeSearched, Flight flightCarrierOperated) {
-		return flightToBeSearched.flightCarrierOperated.trim().equals(flightCarrierOperated.flightCarrierOperated.trim());
+		if (flightToBeSearched.flightCarrierOperated != null && flightCarrierOperated.flightCarrierOperated != null) {
+			return flightToBeSearched.flightCarrierOperated.trim().equals(flightCarrierOperated.flightCarrierOperated.trim());
+		} else {
+			return false;
+		}
 	}
 
 	private static boolean isMarketedCarrierMatching(Flight flightToBeSearched, Flight flightMarketedOperated) {
