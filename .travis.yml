@@ -41,3 +41,11 @@ android:
     #- sys-img-armeabi-v7a-android-17
 script: 
   - ./gradlew assembleRelease
+deploy:
+  provider: releases
+  api-key: $GITHUB_APIKEY
+  file: "app/build/outputs/apk/app-debug.apk"
+  skip_cleanup: true
+  on:
+    tags: true
+    all_branches: true
