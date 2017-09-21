@@ -25,7 +25,7 @@ script:
 deploy:
   provider: releases
   api-key: $GITHUB_APIKEY
-  file: app/build/outputs/apk/release/apk-release-signed.apk
+  file: apk-release-signed.apk
   skip_cleanup: true
   on:
     tags: true
