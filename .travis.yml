@@ -25,7 +25,7 @@ script:
 deploy:
   provider: releases
   api-key: $GITHUB_APIKEY
-  file: app/build/outputs/apk/app-debug.apk
+  file: app/build/outputs/apk/apk-release-signed.apk
   skip_cleanup: true
   on:
     tags: true
@@ -42,4 +42,4 @@ before_deploy:
 - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/github_keystore.jks -storepass $storepass -keypass $storepass app-release-unsigned.apk github
 # Verification
 - jarsigner -verify app-release-unsigned.apk
-- "${ANDROID_HOME}/build-tools/26.0.1/zipalign -v 4 app-release-unsigned.apk yourapp.apk"
+- "${ANDROID_HOME}/build-tools/26.0.1/zipalign -v 4 app-release-unsigned.apk apk-release-signed.apk"
