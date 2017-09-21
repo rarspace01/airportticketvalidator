@@ -38,7 +38,7 @@ env:
     secure: GHFHO2vAXVDalsZnV3r1gQIQsj9mGpWlPrnjgMHluZ1iOOktP00xieGHT/IpPYuVAdNgFQsU1NSHKA6LUg0IMoW/3mVDXjRNakRg98fSgnayAzQcHhYyvzBW36RB+vKl1VRhl4ibIe+UR9sH4wTSpRtxky+16P4DPaRXDx9jjz3MkFskw6QeADpAGcAYHeCJFa4fFdUk0KcgESltBjpu6FIuwN03MRzX2uULLumCHSoP5U5mt1GC37eqsegXdS8skFNiPrUBx90wLxM05f2BrmzDpBchgRQCWvVQk9jfzkMNHP/qd3U75+POL+K3Yfm5PkZUoIjaLMJT+gCr3EauC6BLzbcyrCz6r4OryClzv8cbKZS2pcsiErdR3BFfjdnAqsieYUXqPvpRZUzi96CRT2ZYv8BFM3CR+ZPixIZKSjwR1Q5Omz6ksnTQ+Zt5y1HqnGWYPykQxsf3/CknGOzi6BdB2rZvYN67vgdWYFa2/wzpNpZodw2mH45CIzRkESivA7UTC9hAUStzSCClqwan3ScHWvGScJ4e5VuUybEmf9LhxaIMYOmZZQQu0xZCOOAfiCx5jDxLPzy3a3QLZflWezDKASEelNyQhjTvpPnIj6JU8bYVfi03N+/QdTsugcGSViJn9mtlaVEeebq+lNuSx3yeDT6dIYFplHcLuvdH+o0=
 before_deploy:
 - cp $TRAVIS_BUILD_DIR/github_keystore.jks $HOME
-- cd app/build/outputs/apk/
+- cd app/build/outputs/apk/release/
 - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/github_keystore.jks -storepass $storepass -keypass $storepass app-release-unsigned.apk github
 # Verification
 - jarsigner -verify app-release-unsigned.apk
