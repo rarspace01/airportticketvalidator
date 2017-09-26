@@ -116,7 +116,7 @@ class MainActivity : AppCompatActivity() {
 
                 val bcbpFlight = FlightFactory.createFlightFromBCBP(readTicket)
 
-                if (FlightUtil.isFlightInList(bcbpFlight, cachedFlightList)) {
+                if (FlightUtil.isFlightInList(bcbpFlight, AirportTicketValidatorApplication.getInstance().flightCache)) {
                     Toast.makeText(this, "Valid Ticket!", Toast.LENGTH_LONG).show()
                     setBackgroundSuccess(true)
                     postOnSlack(readTicket.passengerName + " had an valid Ticket!\uE312")
@@ -148,6 +148,8 @@ class MainActivity : AppCompatActivity() {
 
                     // parse Flights to Array of Flights
                     cachedFlightList.addAll(FlightFactory.createFlightsFromXMLSource(response))
+
+                    AirportTicketValidatorApplication.getInstance().addToFlightCache(cachedFlightList);
 
                     val btnScan = findViewById<Button>(R.id.btn_Scan)
                     btnScan.setText(resources.getString(R.string.scan) + "["+cachedFlightList.size+"]")
