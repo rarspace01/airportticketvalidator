@@ -55,7 +55,7 @@ class MainActivity : AppCompatActivity() {
             bcbpCode.setImageBitmap(barcodeBitmap)
             bcbpCode.setBackgroundColor(Color.WHITE)
             true*/
-            showCode()
+            //showCode()
             true
         })
 
@@ -65,7 +65,7 @@ class MainActivity : AppCompatActivity() {
     private fun showCode() {
         var dayOfTheYear = "000"+Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
         dayOfTheYear = dayOfTheYear.substring(dayOfTheYear.length-3,dayOfTheYear.length)
-        val bcbpRawData = "M1TESTER/TASTUR        AAAAAH HAMFRALH 0001 " + dayOfTheYear + "Y001A0018 147>1181  7250BEW 0000000000000291040000000000 0   LH 992003667193035     "
+        val bcbpRawData = "M1FOUNDTHE/EASTEREGG        AAAAAH HAMFRALH 0001 " + dayOfTheYear + "Y001A0018 147>1181  7250BEW 0000000000000291040000000000 0   LH 992003667193035     "
         val context = this
         val intent = Intent("com.google.zxing.client.android.ENCODE")
         intent.putExtra("ENCODE_TYPE", "Text")
