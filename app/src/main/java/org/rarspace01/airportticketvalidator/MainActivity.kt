@@ -69,9 +69,12 @@ class MainActivity : AppCompatActivity() {
             AlertDialog.Builder(this).setTitle("Choose flight")
                     .setItems(flightList, DialogInterface.OnClickListener { dialog, which ->
                         val flightFromString = getFlightFromString(flightList!![which])
+                        // TODO: set the date according to flight
                         var dayOfTheYear = "000" + Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
                         dayOfTheYear = dayOfTheYear.substring(dayOfTheYear.length - 3, dayOfTheYear.length)
-                        val bcbpRawData = "M1FOUNDTHE/EASTEREGG        AAAAAH HAMFRALH 0001 " + dayOfTheYear + "Y001A0018 147>1181  7250BEW 0000000000000291040000000000 0   LH 992003667193035     "
+                        val bcbpRawData = "M1FOUNDTHE/EASTEREGG        AAAAAH " + flightFromString.fromAirport + flightFromString.toAirport +
+                                flightFromString.unifiedFlightNameBCBP + " " +
+                                dayOfTheYear + "Y001A0018 147>1181  7250BEW 0000000000000291040000000000 0   LH 992003667193035    Y"
                         val context = this
                         val intent = Intent("com.google.zxing.client.android.ENCODE")
                         intent.putExtra("ENCODE_TYPE", "Text")
@@ -85,7 +88,14 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun getFlightFromString(listString: String): Flight {
-        return Flight()
+        var returnFlight = Flight()
+        for (flight: Flight in AirportTicketValidatorApplication.getInstance().flightCache) {
+            if (listString.contains(flight.unifiedFlightName)) {
+                returnFlight = flight
+                break;
+            }
+        }
+        return returnFlight
     }
 
     private fun getActivity(): Activity {
@@ -119,6 +129,7 @@ class MainActivity : AppCompatActivity() {
                 Toast.makeText(this, "Cancelled", Toast.LENGTH_LONG).show()
             } else {
                 Log.d("MainActivity", "Scanned")
+                Log.d("MainActivity", result.contents)
                 //Toast.makeText(this, "Scanned: " + result.contents, Toast.LENGTH_LONG).show()
                 val bcbpParser = Parser()
                 val readTicket = bcbpParser.parse(result.contents)
