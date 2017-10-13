@@ -35,7 +35,6 @@
             android:layout_alignParentStart="true"
             android:layout_below="@id/labelAirport"
             android:ems="10"
-            android:enabled="false"
             android:inputType="textCapCharacters"
             android:text="@string/airportDefault"
             tools:layout_editor_absoluteX="0dp"
