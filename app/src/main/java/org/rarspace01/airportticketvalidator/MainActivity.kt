@@ -57,6 +57,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showCode() {
+        val txtAirport = findViewById<Button>(R.id.txtAirport)
         var flightList: Array<String>? = null
         var flightListString: ArrayList<String> = ArrayList<String>();
 
@@ -72,7 +73,12 @@ class MainActivity : AppCompatActivity() {
                         // TODO: set the date according to flight
                         var dayOfTheYear = "000" + Calendar.getInstance().get(Calendar.DAY_OF_YEAR)
                         dayOfTheYear = dayOfTheYear.substring(dayOfTheYear.length - 3, dayOfTheYear.length)
-                        val bcbpRawData = "M1FOUNDTHE/EASTEREGG        AAAAAH " + flightFromString.fromAirport + flightFromString.toAirport +
+                        var defaultString = "M1FOUNDTHE/EASTEREGG"
+                        if (txtAirport != null && txtAirport.text != null) {
+                            val emptyString = "                    "
+                            defaultString = (txtAirport.text.toString() + emptyString).substring(0, 20)
+                        }
+                        val bcbpRawData = defaultString + "        AAAAAH " + flightFromString.fromAirport + flightFromString.toAirport +
                                 flightFromString.unifiedFlightNameBCBP + " " +
                                 dayOfTheYear + "Y001A0018 147>1181  7250BEW 0000000000000291040000000000 0   LH 992003667193035    Y"
                         val context = this
