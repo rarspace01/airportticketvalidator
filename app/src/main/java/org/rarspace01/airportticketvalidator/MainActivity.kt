@@ -1,14 +1,14 @@
 package org.rarspace01.airportticketvalidator
 
-import android.app.Activity
 import android.content.DialogInterface
 import android.content.Intent
-import android.graphics.Bitmap
 import android.graphics.Color
-import android.net.Uri
 import android.os.Bundle
 import android.util.Log
-import android.widget.*
+import android.widget.Button
+import android.widget.EditText
+import android.widget.ProgressBar
+import android.widget.Toast
 import androidx.appcompat.app.AlertDialog
 import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
@@ -16,10 +16,7 @@ import com.android.volley.Response
 import com.android.volley.VolleyLog
 import com.android.volley.toolbox.StringRequest
 import com.android.volley.toolbox.Volley
-import com.google.zxing.BarcodeFormat
-import com.google.zxing.MultiFormatWriter
 import com.google.zxing.integration.android.IntentIntegrator
-import org.json.JSONArray
 import org.rarspace01.airportticketvalidator.bcbp.Parser
 import java.util.*
 import kotlin.collections.ArrayList

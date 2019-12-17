@@ -1,8 +1,5 @@
 package org.rarspace01.airportticketvalidator;
 
-import org.json.JSONArray;
-import org.json.JSONException;
-import org.json.JSONObject;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -15,11 +12,8 @@ import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Locale;
 
 public class FlightFactory {
-
-	private static SimpleDateFormat parserDate = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm", Locale.UK);
 
 	public static Flight createFlightFromBCBP(IataCode inputBCBP) {
 		Flight returnFlight = null;
@@ -31,49 +25,6 @@ public class FlightFactory {
 			returnFlight.flightCarrierOperated = inputBCBP.getFirstFlightSegment().getOperatingCarrierDesignator();
 			returnFlight.flightNumberOperated = Integer.parseInt(inputBCBP.getFirstFlightSegment().getFlightNumber().replaceAll("[A-Za-z]", ""));
 			returnFlight.flightTime = inputBCBP.getFirstFlightSegment().getDateOfFlight().getTime();
-		}
-
-		return returnFlight;
-	}
-
-	public static List<Flight> createFlightsFromJSONArray(JSONArray inputJSON) {
-
-		List<Flight> localList = new ArrayList<>();
-
-		for (int i = 0; i < inputJSON.length(); i++) {
-			try {
-				JSONObject localFlight = inputJSON.getJSONObject(i);
-
-				Flight readFlight = flightFromJSONObject(localFlight);
-				localList.add(readFlight);
-
-			} catch (JSONException e) {
-				e.printStackTrace();
-			}
-		}
-
-		return localList;
-	}
-
-	private static Flight flightFromJSONObject(JSONObject jsonObject) {
-		Flight returnFlight = null;
-
-		try {
-			returnFlight = new Flight();
-
-			JSONObject departure = jsonObject.getJSONObject("Departure");
-			JSONObject arrival = jsonObject.getJSONObject("Arrival");
-
-			returnFlight.fromAirport = departure.getString("AirportCode");
-			returnFlight.flightTime = parserDate.parse(departure.getString("ScheduledTimeLocal"));
-			returnFlight.toAirport = arrival.getString("AirportCode");
-			returnFlight.flightCarrierMarketed = jsonObject.getJSONObject("MarketingCarrier").getString("AirlineID");
-			returnFlight.flightNumberMarketed = Integer.parseInt(jsonObject.getJSONObject("MarketingCarrier").getString("FlightNumber"));
-			returnFlight.flightCarrierOperated = jsonObject.getJSONObject("OperatingCarrier").getString("AirlineID");
-			returnFlight.flightNumberOperated = Integer.parseInt(jsonObject.getJSONObject("OperatingCarrier").getString("FlightNumber"));
-			returnFlight.aircraft = jsonObject.getJSONObject("Equipment").getString("AircraftCode");
-		} catch (JSONException | ParseException e) {
-			e.printStackTrace();
 		}
 
 		return returnFlight;
