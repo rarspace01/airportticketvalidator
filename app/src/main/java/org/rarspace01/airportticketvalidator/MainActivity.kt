@@ -152,8 +152,6 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    private var jsonAuth: String = "";
-
     fun getDepartingFlights(airportCode: String): List<Flight> {
         var isProccessed = false;
         val flights = ArrayList<Flight>();
@@ -185,47 +183,6 @@ class MainActivity : AppCompatActivity() {
         queue.add(req)
 
         return flights
-    }
-
-    private fun createBarcodeBitmap(data: String, width: Int, height: Int): Bitmap {
-        val writer = MultiFormatWriter()
-        val finalData = Uri.encode(data)
-        // Use 1 as the height of the matrix as this is a 1D Barcode.
-        val bm = writer.encode(finalData, BarcodeFormat.AZTEC, width, height)
-        val imageBitmap = Bitmap.createBitmap(width * 2, height * 2, Bitmap.Config.ARGB_8888)
-
-        for (i in 0..(width - 1)) {//width
-            for (j in 0..(height - 1)) {//height
-                imageBitmap.setPixel(i * 2, j * 2, if (bm.get(i, j)) Color.BLACK else Color.WHITE)
-            }
-        }
-        return imageBitmap
-    }
-
-    private fun postOnSlack(message: String) {
-        var slackHookPage = "https://hooks.slack.com/services/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"
-        val queue = Volley.newRequestQueue(this)
-
-        val req = object : StringRequest(Request.Method.POST, slackHookPage,
-                Response.Listener<String> { response ->
-
-                }, Response.ErrorListener { error ->
-            VolleyLog.d("Error", "Error: " + error.message)
-
-        }) {
-
-            override fun getBody(): ByteArray {
-                var fakeJSON = "{\"text\":\"" + message + "\"}"
-                return fakeJSON.toByteArray()
-            }
-
-            override fun getBodyContentType(): String {
-                return "application/json"
-            }
-
-        }
-
-        queue.add(req)
     }
 
 }
