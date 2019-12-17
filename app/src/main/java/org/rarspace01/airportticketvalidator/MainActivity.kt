@@ -27,10 +27,7 @@ import kotlin.collections.ArrayList
 
 class MainActivity : AppCompatActivity() {
 
-    val cachedFlightList: ArrayList<Flight> = ArrayList<Flight>()
-
-    var jsonArrayDepartingFlights = JSONArray()
-    var longClicks = 0
+    val cachedFlightList: ArrayList<Flight> = ArrayList()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -39,19 +36,14 @@ class MainActivity : AppCompatActivity() {
         val btnScan = findViewById<Button>(R.id.btn_Scan)
         setProgressBar(0)
 
-        btnScan.setOnClickListener({ view ->
+        btnScan.setOnClickListener({
             IntentIntegrator(this).setBeepEnabled(false).setOrientationLocked(false).initiateScan()
         })
 
-        btnScan.setOnLongClickListener({ view ->
-            val bcbpCode = findViewById<ImageView>(R.id.bcbpCode)
-            /*val barcodeBitmap = createBarcodeBitmap(bcbpRawData, 250, 250)
-            bcbpCode.setImageBitmap(barcodeBitmap)
-            bcbpCode.setBackgroundColor(Color.WHITE)
-            true*/
+        btnScan.setOnLongClickListener {
             showCode()
             true
-        })
+        }
 
         getDepartingFlights("HAM");
     }
@@ -102,10 +94,6 @@ class MainActivity : AppCompatActivity() {
             }
         }
         return returnFlight
-    }
-
-    private fun getActivity(): Activity {
-        return getActivity()
     }
 
     private fun setProgressBar(progress: Int) {
@@ -183,7 +171,7 @@ class MainActivity : AppCompatActivity() {
                     AirportTicketValidatorApplication.getInstance().addToFlightCache(cachedFlightList);
 
                     val btnScan = findViewById<Button>(R.id.btn_Scan)
-                    btnScan.setText(resources.getString(R.string.scan) + "[" + cachedFlightList.size + "]")
+                    btnScan.setText(resources.getString(R.string.scan) + String.format("[%d]",cachedFlightList.size))
 
                     isProccessed = true;
                     setProgressBar(100)
