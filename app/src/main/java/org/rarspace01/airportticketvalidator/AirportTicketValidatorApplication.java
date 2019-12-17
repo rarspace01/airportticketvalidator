@@ -5,10 +5,6 @@ import android.app.Application;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by deha on 26.09.17.
- */
-
 public class AirportTicketValidatorApplication extends Application {
 
     private static AirportTicketValidatorApplication singleton;

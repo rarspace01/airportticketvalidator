@@ -7,10 +7,10 @@ import android.graphics.Bitmap
 import android.graphics.Color
 import android.net.Uri
 import android.os.Bundle
-import android.support.v7.app.AlertDialog
-import android.support.v7.app.AppCompatActivity
 import android.util.Log
 import android.widget.*
+import androidx.appcompat.app.AlertDialog
+import androidx.appcompat.app.AppCompatActivity
 import com.android.volley.Request
 import com.android.volley.Response
 import com.android.volley.VolleyLog
@@ -57,7 +57,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     private fun showCode() {
-        val txtAirport = findViewById<Button>(R.id.txtAirport)
+        val txtAirport = findViewById<EditText>(R.id.txtAirport)
         var flightList: Array<String>? = null
         var flightListString: ArrayList<String> = ArrayList<String>();
 
@@ -127,7 +127,7 @@ class MainActivity : AppCompatActivity() {
         resultButton.setBackgroundColor(Color.GRAY)
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent) {
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         val result = IntentIntegrator.parseActivityResult(requestCode, resultCode, data)
         if (result != null) {
             if (result.contents == null) {
