@@ -10,6 +10,8 @@ cache:
   directories:
   - $HOME/.gradle/caches/
   - $HOME/.gradle/wrapper/
+  - $HOME/.android/build-cache
+
 android:
   components:
   - tools
@@ -43,4 +45,4 @@ before_deploy:
 - jarsigner -verbose -sigalg SHA1withRSA -digestalg SHA1 -keystore $HOME/github_keystore.jks -storepass $storepass -keypass $storepass app-release-unsigned.apk github
 # Verification
 - jarsigner -verify app-release-unsigned.apk
-- "${ANDROID_HOME}/build-tools/26.0.1/zipalign -v 4 app-release-unsigned.apk apk-release-signed.apk"
+- "${ANDROID_HOME}/build-tools/29.0.2/zipalign -v 4 app-release-unsigned.apk apk-release-signed.apk"
