@@ -31,6 +31,8 @@ class MainActivity : AppCompatActivity() {
         setContentView(R.layout.activity_main)
 
         val btnScan = findViewById<Button>(R.id.btn_Scan)
+        val btnResult = findViewById<Button>(R.id.btn_result)
+        val textAirport = findViewById<EditText>(R.id.txtAirport)
         setProgressBar(0)
 
         btnScan.setOnClickListener({
@@ -42,7 +44,12 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        getDepartingFlightsV2("HAM");
+        btnResult.setOnLongClickListener {
+            resetBackgroundSuccess()
+            getDepartingFlights(textAirport.text.toString());
+            true
+        }
+
     }
 
     private fun showCode() {
@@ -139,7 +146,7 @@ class MainActivity : AppCompatActivity() {
                     setBackgroundSuccess(true)
                     //postOnSlack(readTicket.passengerName + " had an valid Ticket!\uE312")
                 } else {
-                    Toast.makeText(this, "Non valid Ticket!", Toast.LENGTH_LONG).show()
+                    Toast.makeText(this, bcbpFlight.toString(), Toast.LENGTH_LONG).show()
                     setBackgroundSuccess(false)
                     //postOnSlack(readTicket.passengerName + " had an invalid Ticket")
                 }
@@ -151,7 +158,7 @@ class MainActivity : AppCompatActivity() {
         }
     }
 
-    fun getDepartingFlightsV2(airportCode: String): List<Flight> {
+    fun getDepartingFlights(airportCode: String): List<Flight> {
         var isProccessed = false;
         val flights = ArrayList<Flight>()
         val currentDate = Calendar.getInstance()
@@ -201,39 +208,6 @@ class MainActivity : AppCompatActivity() {
 
         queue.add(req)
         queue.add(req2)
-
-        return flights
-    }
-
-    fun getDepartingFlights(airportCode: String): List<Flight> {
-        var isProccessed = false;
-        val flights = ArrayList<Flight>();
-        val currentDate = Date()
-        var departedPage = "https://www.hamburg-airport.de/tools/flightplan/flightplan_detail.php/en/departures/today/"
-        val queue = Volley.newRequestQueue(this)
-
-        val req = object : StringRequest(Request.Method.GET, departedPage,
-                Response.Listener<String> { response ->
-                    //Log.d("Response", response)
-
-                    // parse Flights to Array of Flights
-                    cachedFlightList.addAll(FlightFactory.createFlightsFromXMLSource(response))
-
-                    AirportTicketValidatorApplication.getInstance().addToFlightCache(cachedFlightList);
-
-                    val btnScan = findViewById<Button>(R.id.btn_Scan)
-                    btnScan.setText(resources.getString(R.string.scan) + String.format("[%d]",cachedFlightList.size))
-
-                    isProccessed = true;
-                    setProgressBar(100)
-
-                }, Response.ErrorListener { error ->
-            VolleyLog.d("Error", "Error: " + error.message)
-            isProccessed = true;
-            Toast.makeText(this@MainActivity, "" + error.message, Toast.LENGTH_SHORT).show()
-        }) {}
-
-        queue.add(req)
 
         return flights
     }

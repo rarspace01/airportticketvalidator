@@ -1,8 +1,12 @@
 package org.rarspace01.airportticketvalidator;
 
 import java.text.DecimalFormat;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import lombok.Data;
+
+@Data
 public class Flight implements Comparable{
     public String fromAirport;
     public String toAirport;
@@ -16,7 +20,7 @@ public class Flight implements Comparable{
 
     @Override
     public String toString() {
-        return getUnifiedFlightName() + " - " + fromAirport + "->" + toAirport + " @" + flightTime;
+        return getUnifiedFlightName() + " - " + fromAirport + "->" + toAirport + " @" + new SimpleDateFormat("HH:mm").format(flightTime);
     }
 
     public String getUnifiedFlightName() {
