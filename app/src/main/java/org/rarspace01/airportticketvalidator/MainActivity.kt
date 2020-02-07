@@ -42,7 +42,7 @@ class MainActivity : AppCompatActivity() {
             true
         }
 
-        getDepartingFlights("HAM");
+        getDepartingFlightsV2("HAM");
     }
 
     private fun showCode() {
@@ -147,6 +147,60 @@ class MainActivity : AppCompatActivity() {
             // This is important, otherwise the result will not be passed to the fragment
             super.onActivityResult(requestCode, resultCode, data)
         }
+    }
+
+    fun getDepartingFlightsV2(airportCode: String): List<Flight> {
+        var isProccessed = false;
+        val flights = ArrayList<Flight>()
+        val currentDate = Calendar.getInstance()
+        var departedPage = String.format("https://www.flightstats.com/v2/api-next/flight-tracker/dep/%s/%d/%d/%d/0?carrierCode=&numHours=12",airportCode,currentDate.get(Calendar.YEAR),currentDate.get(Calendar.MONTH)+1, currentDate.get(Calendar.DAY_OF_MONTH))
+        val queue = Volley.newRequestQueue(this)
+
+        val req = object : StringRequest(Request.Method.GET, departedPage,
+                Response.Listener<String> { response ->
+                    //Log.d("Response", response)
+
+                    // parse Flights to Array of Flights
+                    cachedFlightList.addAll(FlightFactory.createFlightsFromJSONSource(response,airportCode))
+
+                    AirportTicketValidatorApplication.getInstance().addToFlightCache(cachedFlightList);
+
+                    val btnScan = findViewById<Button>(R.id.btn_Scan)
+                    btnScan.setText(resources.getString(R.string.scan) + String.format("[%d]",cachedFlightList.size))
+
+                    isProccessed = true;
+                    setProgressBar(100)
+                }, Response.ErrorListener { error ->
+            VolleyLog.d("Error", "Error: " + error.message)
+            isProccessed = true;
+            Toast.makeText(this@MainActivity, "" + error.message, Toast.LENGTH_SHORT).show()
+        }) {}
+
+        var departedPage2 = String.format("https://www.flightstats.com/v2/api-next/flight-tracker/dep/%s/%d/%d/%d/12?carrierCode=&numHours=12",airportCode,currentDate.get(Calendar.YEAR),currentDate.get(Calendar.MONTH)+1, currentDate.get(Calendar.DAY_OF_MONTH))
+        val req2 = object : StringRequest(Request.Method.GET, departedPage2,
+                Response.Listener<String> { response ->
+                    //Log.d("Response", response)
+
+                    // parse Flights to Array of Flights
+                    cachedFlightList.addAll(FlightFactory.createFlightsFromJSONSource(response,airportCode))
+
+                    AirportTicketValidatorApplication.getInstance().addToFlightCache(cachedFlightList);
+
+                    val btnScan = findViewById<Button>(R.id.btn_Scan)
+                    btnScan.setText(resources.getString(R.string.scan) + String.format("[%d]",cachedFlightList.size))
+
+                    isProccessed = true;
+                    setProgressBar(100)
+                }, Response.ErrorListener { error ->
+            VolleyLog.d("Error", "Error: " + error.message)
+            isProccessed = true;
+            Toast.makeText(this@MainActivity, "" + error.message, Toast.LENGTH_SHORT).show()
+        }) {}
+
+        queue.add(req)
+        queue.add(req2)
+
+        return flights
     }
 
     fun getDepartingFlights(airportCode: String): List<Flight> {

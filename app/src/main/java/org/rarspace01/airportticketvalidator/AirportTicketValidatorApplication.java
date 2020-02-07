@@ -27,6 +27,6 @@ public class AirportTicketValidatorApplication extends Application {
     public void onCreate() {
         super.onCreate();
         singleton = this;
-        flightCache = new ArrayList<Flight>();
+        flightCache = new ArrayList<>();
     }
 }

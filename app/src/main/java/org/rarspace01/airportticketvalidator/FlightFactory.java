@@ -1,19 +1,31 @@
 package org.rarspace01.airportticketvalidator;
 
+import com.google.gson.JsonArray;
+import com.google.gson.JsonElement;
+import com.google.gson.JsonNull;
+import com.google.gson.JsonParser;
+
+import org.jetbrains.annotations.NotNull;
+import org.jetbrains.annotations.Nullable;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 import org.rarspace01.airportticketvalidator.bcbp.model.IataCode;
 
+import java.io.IOException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
+import java.util.function.Consumer;
 
 public class FlightFactory {
+
+	public static final SimpleDateFormat DATE_FORMAT = new SimpleDateFormat("HH:mm");
 
 	public static Flight createFlightFromBCBP(IataCode inputBCBP) {
 		Flight returnFlight = null;
@@ -47,7 +59,7 @@ public class FlightFactory {
 				if (elementText.matches("[0-9]{2,2}:[0-9]{2,2}")) {
 					String timeString = elementText;
 					try {
-						Date parseTime = new SimpleDateFormat("HH:mm").parse(timeString);
+						Date parseTime = DATE_FORMAT.parse(timeString);
 						Calendar timeCalendar = Calendar.getInstance();
 						timeCalendar.setTime(parseTime);
 						Calendar calendar = Calendar.getInstance();
@@ -91,4 +103,29 @@ public class FlightFactory {
 		return localList;
 	}
 
+	@NotNull
+	public static List<Flight> createFlightsFromJSONSource(@Nullable String response, final String departureAirport) {
+		final List<Flight> localList = new ArrayList<>();
+		JsonElement jsonElement = JsonParser.parseString(response);
+		JsonArray jsonFlights = jsonElement.getAsJsonObject().get("data").getAsJsonObject().get("flights").getAsJsonArray();
+		jsonFlights.iterator().forEachRemaining(new Consumer<JsonElement>() {
+			@Override
+			public void accept(JsonElement jsonElement) {
+				Flight flight = new Flight();
+				try {
+					flight.flightTime = DATE_FORMAT.parse(jsonElement.getAsJsonObject().get("departureTime").getAsJsonObject().get("time24").getAsString());
+				} catch (ParseException ignored) {
+				}
+				flight.fromAirport = departureAirport;
+				flight.toAirport = jsonElement.getAsJsonObject().get("airport").getAsJsonObject().get("fs").getAsString();
+				flight.flightCarrierMarketed = jsonElement.getAsJsonObject().get("carrier").getAsJsonObject().get("fs").getAsString();
+				flight.flightNumberMarketed = Integer.parseInt(jsonElement.getAsJsonObject().get("carrier").getAsJsonObject().get("flightNumber").getAsString());
+				flight.flightCarrierOperated = jsonElement.getAsJsonObject().get("operatedBy") instanceof JsonNull ? null : jsonElement.getAsJsonObject().get("operatedBy").getAsString();
+
+				localList.add(flight);
+			}
+		});
+
+		return localList;
+	}
 }
