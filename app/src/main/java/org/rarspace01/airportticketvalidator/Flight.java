@@ -3,7 +3,7 @@ package org.rarspace01.airportticketvalidator;
 import java.text.DecimalFormat;
 import java.util.Date;
 
-public class Flight {
+public class Flight implements Comparable{
     public String fromAirport;
     public String toAirport;
     public String flightName;
@@ -33,5 +33,16 @@ public class Flight {
 
     public String getUnifiedFlightNameBCBP() {
         return (getFlightCarrierUnified() + "   ").substring(0, 3) + (new DecimalFormat("0000").format(getFlightNumberUnified()));
+    }
+
+    @Override
+    public int compareTo(Object o) {
+        if(o instanceof Flight){
+            Flight otherFlight = (Flight) o;
+            int compareFlightTime = this.flightTime.compareTo(otherFlight.flightTime);
+            int compareFlightNumber = this.getUnifiedFlightName().compareTo(otherFlight.getUnifiedFlightName());
+            return compareFlightTime == 0 ? compareFlightNumber : compareFlightTime;
+        }
+        return 0;
     }
 }

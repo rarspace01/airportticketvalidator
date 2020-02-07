@@ -47,8 +47,10 @@ class MainActivity : AppCompatActivity() {
 
     private fun showCode() {
         val txtAirport = findViewById<EditText>(R.id.txtAirport)
-        var flightList: Array<String>? = null
-        var flightListString: ArrayList<String> = ArrayList<String>();
+        var flightList: Array<String>?
+        var flightListString: ArrayList<String> = ArrayList()
+
+        AirportTicketValidatorApplication.getInstance().flightCache.sort()
 
         for (flight: Flight in AirportTicketValidatorApplication.getInstance().flightCache) {
             flightListString.add(flight.toString());
