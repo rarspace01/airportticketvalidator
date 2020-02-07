@@ -159,6 +159,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     fun getDepartingFlights(airportCode: String): List<Flight> {
+        cachedFlightList.clear()
         var isProccessed = false;
         val flights = ArrayList<Flight>()
         val currentDate = Calendar.getInstance()
