@@ -30,7 +30,7 @@ dependencies {
     implementation 'org.jsoup:jsoup:1.21.2'
     implementation 'org.projectlombok:lombok:1.18.40'
     annotationProcessor 'org.projectlombok:lombok:1.18.40'
-    implementation 'com.google.code.gson:gson:2.13.1'
+    implementation 'com.google.code.gson:gson:2.13.2'
     testImplementation 'org.junit.jupiter:junit-jupiter-api:5.13.4'
 //    androidTestImplementation 'androidx.test:runner:1.5.2'
 //    androidTestImplementation 'androidx.test.espresso:espresso-core:3.5.1'
